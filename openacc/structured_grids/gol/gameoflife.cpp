@@ -67,7 +67,6 @@ void visual_mode(const char* filename) {
         system("clear");
         print_game(cells, n, m);
         gol_parallel(cells, n, m, 1, 4);
-        //gol_serial(cells, n, m, 1);
         usleep(5000000);
     }
 }
@@ -89,8 +88,8 @@ void correctness_tests() {
         passed += correctness_test("config/large_glider", 50, 4, steps[i]) ? 1 : 0;
         passed += correctness_test("config/large_glider", 50, 8, steps[i]) ? 1 : 0;
         passed += correctness_test("config/large_glider", 50, 9, steps[i]) ? 1 : 0;
-        passed += correctness_test("config/xl_glider", 50, 4, steps[i]) ? 1 : 0;
-        passed += correctness_test("config/xl_glider", 50, 8, steps[i]) ? 1 : 0;
+        passed += correctness_test("config/glider", 50, 4, steps[i]) ? 1 : 0;
+        passed += correctness_test("config/glider", 50, 8, steps[i]) ? 1 : 0;
     }
     printf("%d/%d tests passed\n", passed, 56);
 }
@@ -119,9 +118,9 @@ bool correctness_test(const char* filename, int iterations, int threads, int ste
 
 void performance_tests() {
     printf("PERFORMANCE TESTS:\n");
-    performance_test("config/xl_glider", 1000, 2);
-    performance_test("config/xl_glider", 1000, 4);
-    performance_test("config/xl_glider", 1000, 8);
+    performance_test("config/glider", 1000, 2);
+    performance_test("config/glider", 1000, 4);
+    performance_test("config/glider", 1000, 8);
     performance_test("config/xxl_random", 1000, 8);
 }
 
@@ -183,7 +182,6 @@ void input_game(bool** cells, int* n, int* m, const char* filename) {
 
     fscanf(in, "%d", n);
     fscanf(in, "%d", m);
-    //*cells = malloc(*n * *m * sizeof(bool));
 	*cells = static_cast<bool*>(malloc((*n) * (*m) * sizeof(bool)));
 
     while((cell = fgetc(in)) == '\n');
@@ -192,7 +190,7 @@ void input_game(bool** cells, int* n, int* m, const char* filename) {
             (*cells)[i * *m + j] = cell != ' ';
             cell = fgetc(in);
         }
-        cell = fgetc(in); // eat the new line
+        cell = fgetc(in); 
     }
     fclose(in);
 }
@@ -201,7 +199,7 @@ void print_game(bool* cells, int n, int m) {
     static int iteration = 1;
     int i, j;
 
-    // print top border
+    
     printf("+");
     for(i = 0; i < m; ++i) printf("-");
     printf("+\n");
@@ -215,7 +213,7 @@ void print_game(bool* cells, int n, int m) {
         printf("\n");
     }
 
-    // print bottom border
+    
     printf("+");
     for(i = 0; i < m; ++i) printf("-");
     printf("+\n");

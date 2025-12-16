@@ -3,6 +3,10 @@ CFLAGS = -Wall -Werror -O2
 LDLIBS = -pthread
 OBJECTS = gameoflife.o gol_serial.o gol_parallel.o 
 
+CXXFLAGS += -fopenacc
+
+
+
 all: gameoflife
 
 gameoflife.o: gameoflife.cpp gameoflife.h

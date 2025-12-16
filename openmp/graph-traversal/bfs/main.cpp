@@ -1,17 +1,4 @@
-// main.cpp
-// Flags:
-//   -p : profile all graphs at ../data/<name>/<name>.mtx using bfs_parallel
-//        threads = 1,2,4,8,16,32; writes ../output/bfs_profile.csv with speedups.
-//   -c : correctness on hollywood-2009 comparing bfs_parallel vs bfs_serial,
-//        also runs threads = 1,2,8,16 and prints timings.
-//
-// Notes:
-// - Measures *only* BFS time (kernel-equivalent), not I/O/build.
-// - CSV columns:
-//   graph,num_nodes,num_edges,avg_degree,
-//   ms_t1,ms_t2,ms_t4,ms_t8,ms_t16,ms_t32,
-//   mteps_t1,mteps_t2,mteps_t4,mteps_t8,mteps_t16,mteps_t32,
-//   speedup_t2,speedup_t4,speedup_t8,speedup_t16,speedup_t32
+
 
 #include <cstdio>
 #include <cstdlib>
@@ -30,16 +17,13 @@
 
 namespace fs = std::filesystem;
 
-// ---- BFS prototypes (implemented in bfs_serial.cpp / bfs_parallel.cpp)
 double bfs_serial(const int* row_ptr, const int* col_idx, int n, int src, int* cost);
 double bfs_parallel(const int* row_ptr, const int* col_idx, int n, int src, int* cost, int nthreads);
 
-// ---- Matrix Market loader (coordinate) -> CSR (directed adjacency)
 struct CSR {
-  int n = 0;                   // vertices
-  std::vector<int> row_ptr;    // size n+1
-  std::vector<int> col_idx;    // size m
-};
+  int n = 0;                   
+  std::vector<int> row_ptr;    
+  std::vector<int> col_idx;    
 
 static inline std::string trim(const std::string& s){
   size_t a=0,b=s.size();
@@ -61,7 +45,6 @@ static bool load_mtx_to_csr(const std::string& path, CSR& out){
   bool symmetric = (lower.find("symmetric") != std::string::npos);
 
   long long M=0,N=0,NZ=0;
-  // skip comments until size line
   while(std::getline(fin,line)){
     std::string t = trim(line);
     if(t.empty() || t[0]=='%') continue;
@@ -80,13 +63,12 @@ static bool load_mtx_to_csr(const std::string& path, CSR& out){
     if(t.empty() || t[0]=='%') continue;
     std::istringstream iss(t);
     long long i,j; double val=0.0;
-    if(!(iss>>i>>j)) continue; // allow trailing values ignored
+    if(!(iss>>i>>j)) continue; 
     edges.emplace_back((int)i,(int)j);
     if(symmetric && i!=j) edges.emplace_back((int)j,(int)i);
     ++read;
   }
 
-  // enforce 0-based
   int min_idx = INT_MAX;
   for(const auto& e: edges){ if(e.first<min_idx) min_idx=e.first; if(e.second<min_idx) min_idx=e.second; }
   bool zero_based_in_file = (min_idx==0);
@@ -114,7 +96,6 @@ static bool load_mtx_to_csr(const std::string& path, CSR& out){
   return true;
 }
 
-// ---- helpers: data discovery, I/O
 static std::vector<fs::path> find_all_graphs_under_data(){
   std::vector<fs::path> files;
   fs::path data = fs::path("..") / "data";
@@ -168,7 +149,6 @@ static void append_csv_row_ext(const fs::path& csv_path,
       <<sp(1)<<","<<sp(2)<<","<<sp(3)<<","<<sp(4)<<","<<sp(5)<<"\n";
 }
 
-// ---- main
 int main(int argc, char** argv){
   bool do_profile=false, do_correct=false;
   for(int i=1;i<argc;i++){
@@ -179,10 +159,8 @@ int main(int argc, char** argv){
   fs::path outdir = fs::path("..") / "output";
   ensure_dir(outdir);
 
-  // -c: correctness & timing on hollywood-2009, threads = 1,2,8,16
   if(do_correct){
     fs::path mtx = fs::path("..") / "data" / "roadNet-CA" / "roadNet-CA.mtx";
-    //fs::path mtx = fs::path("..") / "data" / "hollywood-2009" / "hollywood-2009.mtx";
     if(!fs::exists(mtx)){
       std::fprintf(stderr,"hollywood-2009 not found at %s\n", mtx.string().c_str());
       return 1;
@@ -209,7 +187,6 @@ int main(int argc, char** argv){
     }
   }
 
-  // -p: profile all graphs with thread sets 1,2,4,8,16,32 -> CSV
   if(do_profile){
     auto files = find_all_graphs_under_data();
     if(files.empty()){
@@ -222,7 +199,6 @@ int main(int argc, char** argv){
       CSR G;
       if(!load_mtx_to_csr(mtx.string(), G)) continue;
 
-      // thread configs and timings
       int thread_list[] = {1,2,4,8,16,32};
       std::vector<double> ms; ms.reserve(6);
       for(int nt : thread_list){

@@ -1,10 +1,9 @@
-// bfs_parallel.cpp
-// For now identical to serial, but keeps an nthreads argument for students to parallelize later.
+
 #include <vector>
 #include <chrono>
 
 double bfs_parallel(const int* row_ptr, const int* col_idx, int n, int src, int* cost, int nthreads){
-  (void)nthreads; // placeholder; students will use this
+  (void)nthreads; 
   if(n<=0 || !row_ptr || !col_idx || !cost) return 0.0;
 
   std::vector<int> graph_mask(n,0);
@@ -25,7 +24,6 @@ double bfs_parallel(const int* row_ptr, const int* col_idx, int n, int src, int*
   do{
     over = 0;
 
-    // kernel1
     for(int tid=0; tid<n; ++tid){
       if(graph_mask[tid]!=0){
         graph_mask[tid]=0;
@@ -41,7 +39,6 @@ double bfs_parallel(const int* row_ptr, const int* col_idx, int n, int src, int*
       }
     }
 
-    // kernel2
     for(int tid=0; tid<n; ++tid){
       if(updating_mask[tid]==1){
         graph_mask[tid]=1;

@@ -1,10 +1,10 @@
 #include "gol_serial.h"
 
-// Computes the given number of iterations for an n x m array of cells.
+
 void gol_serial(bool* cells, int n, int m, int iterations) {
     int t, i, j;
     int neighbors;
-    //bool* cells_new = malloc(n * m * sizeof(bool));
+    
     bool* cells_new = static_cast<bool*>(malloc(n * m * sizeof(bool)));
 
 	bool* temp;

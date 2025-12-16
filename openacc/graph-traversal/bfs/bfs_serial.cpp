@@ -1,4 +1,4 @@
-// bfs_serial.cpp
+
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -20,11 +20,11 @@ double bfs_serial(const int* row_ptr, const int* col_idx, int n, int src, int* c
   auto t0 = clock::now();
 
   int over;
-  //int itercount =0;
+  
   do{
     over = 0;
     
-    // kernel1: update cost of neighbors and mark them to be selected as the frontier nodes for next iterations
+    
     for(int tid=0; tid<n; ++tid){
       if(graph_mask[tid]!=0){
         graph_mask[tid]=0;
@@ -40,7 +40,7 @@ double bfs_serial(const int* row_ptr, const int* col_idx, int n, int src, int* c
       }
     }
 
-    // kernel2: update mask and visited for nodes from current frontier
+   
     for(int tid=0; tid<n; ++tid){
       if(updating_mask[tid]==1){
         graph_mask[tid]=1;
@@ -49,12 +49,11 @@ double bfs_serial(const int* row_ptr, const int* col_idx, int n, int src, int* c
         updating_mask[tid]=0;
       }
     }
-    //itercount++;
+    
   } while(over);
 
   auto t1 = clock::now();
   double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-  //std::cout<<"bfs iterations "<<itercount<<"\n";
   return ms;
 }
 

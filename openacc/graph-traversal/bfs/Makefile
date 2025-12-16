@@ -1,12 +1,11 @@
-# Makefile
-CXX       ?= g++
-CXXFLAGS  ?= -O3 -std=c++17 -Wall -Wextra -pedantic
-# If you're on GCC 8, you may need: make LIBS=-lstdc++fs
+CXX = nvc++
+CXXFLAGS = -O3 -std=c++17 -acc -Minfo=accel
+
 LIBS      ?=
 
-SRCS = main.cpp bfs_serial.cpp bfs_parallel.cpp
+SRCS = main.cpp bfs_serial.cpp bfs_openacc.cpp
 OBJS = $(SRCS:.cpp=.o)
-BIN  = bfs
+BIN = bfs_acc
 
 all: $(BIN)
 
