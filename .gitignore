@@ -1,0 +1,11 @@
+# =========================================
+# Ignore downloaded SPMV data ONLY
+# =========================================
+
+openmp/sparse-linear-algebra/data/
+openacc/sparse-linear-algebra/data/
+
+# =========================================
+# Build artifacts
+# =========================================
+*.o
