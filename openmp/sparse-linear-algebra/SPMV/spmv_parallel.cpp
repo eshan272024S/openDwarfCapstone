@@ -1,6 +1,5 @@
 // spmv_parallel.cpp — parallel SPMV using OpenMP.
 // Computes y = A * x for a matrix in CSR format.
-// We only time the core SPMV loop (not setup or I/O).
 
 #include <chrono>
 #include <omp.h>
