@@ -1,11 +1,30 @@
 # =========================================
-# Ignore downloaded SPMV data ONLY
+# Ignore large downloaded graph data
 # =========================================
 
+openacc/graph-traversal/data/
+openmp/graph-traversal/data/
 openmp/sparse-linear-algebra/data/
 openacc/sparse-linear-algebra/data/
 
 # =========================================
+# Ignore large dataset file types
+# =========================================
+
+*.mtx
+*.tar.gz
+
+# =========================================
 # Build artifacts
 # =========================================
+
 *.o
+*.out
+*.exe
+
+# =========================================
+# Editor / OS junk
+# =========================================
+
+.DS_Store
+.vscode/
