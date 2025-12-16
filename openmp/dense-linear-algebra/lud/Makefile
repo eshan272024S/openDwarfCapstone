@@ -1,12 +1,13 @@
-# === Makefile for LUD (dense, 7-point Laplacian) ===
+# === Makefile for LUD (OpenMP only) ===
 
 # Compiler and flags
-CXX      ?= g++
+CXX      ?= nvc++
 STD      ?= -std=c++17
 OPT      ?= -O3 -fopenmp
 WARN     ?= -Wall -Wextra -Wshadow -Wconversion -Wno-sign-conversion
 DEBUGSYM ?= -g
 SANFLAGS ?=
+
 # Enable sanitizers with: make SAN=1
 ifeq ($(SAN),1)
   SANFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer
@@ -33,10 +34,10 @@ $(BIN): $(OBJ)
 
 # Config targets
 .PHONY: debug release
-debug: OPT := -O0
+debug: OPT := -O0 -fopenmp
 debug: $(BIN)
 
-release: OPT := -O3 -march=native
+release: OPT := -O3 -march=native -fopenmp
 release: $(BIN)
 
 # Convenience runs
@@ -64,4 +65,3 @@ vars:
 	@echo "SRC      = $(SRC)"
 	@echo "OBJ      = $(OBJ)"
 	@echo "BIN      = $(BIN)"
-
